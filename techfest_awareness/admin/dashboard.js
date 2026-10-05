@@ -1,0 +1,5 @@
+const table=document.querySelector("#userTable"),total=document.querySelector("#total"),message=document.querySelector("#message");
+async function loadUsers(){try{const r=await fetch("../api/get_users.php",{credentials:"include"});const d=await r.json();if(!r.ok||!d.success){location.href="index.html";return}table.innerHTML="";total.textContent=d.users.length;d.users.forEach(u=>{const row=document.createElement("tr");[u.id,u.name,u.email,u.mobile,u.place,u.created_at].forEach(v=>{const c=document.createElement("td");c.textContent=v;row.appendChild(c)});table.appendChild(row)})}catch{message.textContent="Unable to load registrations."}}
+document.querySelector("#deleteAll").addEventListener("click",async()=>{if(!confirm("Delete all registrations?"))return;const r=await fetch("../admin_api/delete_all.php",{method:"POST",credentials:"include"});const d=await r.json();message.textContent=d.message;if(d.success)loadUsers()});
+document.querySelector("#logout").addEventListener("click",async()=>{await fetch("../admin_api/logout.php",{method:"POST",credentials:"include"});location.href="index.html"});
+document.addEventListener("DOMContentLoaded",loadUsers);
